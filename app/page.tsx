@@ -53,11 +53,12 @@ export default function Home() {
     setStatus("converting");
 
     try {
-      const [{ default: mammoth }, html2pdfModule] = await Promise.all([
+      const [mammothModule, html2pdfModule] = await Promise.all([
         import("mammoth/mammoth.browser"),
         import("html2pdf.js"),
       ]);
-      const html2pdf = (html2pdfModule as unknown as { default: () => any }).default;
+      const mammoth: any = (mammothModule as any).default || mammothModule;
+      const html2pdf: any = (html2pdfModule as any).default || html2pdfModule;
 
       const arrayBuffer = await file.arrayBuffer();
       const { value: bodyHtml } = await mammoth.convertToHtml(
@@ -71,23 +72,39 @@ export default function Home() {
         }
       );
 
+      if (!bodyHtml || !bodyHtml.trim()) {
+        throw new Error("The document appears to be empty or could not be read.");
+      }
+
+      // html2canvas walks the real DOM and measures via getBoundingClientRect.
+      // Keep the container in normal document flow (absolute positioning at a
+      // large negative left keeps it visually off-screen but still laid out
+      // and measurable). Use px width — html2canvas is pixel-based; mm values
+      // can produce zero-size captures.
       const container = document.createElement("div");
       container.innerHTML = `<style>${PDF_STYLES}</style><div class="document">${bodyHtml}</div>`;
-      container.style.position = "fixed";
-      container.style.left = "-10000px";
+      container.style.position = "absolute";
+      container.style.left = "-99999px";
       container.style.top = "0";
-      container.style.width = "210mm";
+      container.style.width = "794px"; // A4 width at 96 DPI
+      container.style.background = "#ffffff";
       document.body.appendChild(container);
+
+      // Give the browser a frame to lay out the container before html2canvas
+      // measures it. Without this, we sometimes capture a zero-height canvas.
+      await new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve(null)))
+      );
 
       const baseName = file.name.replace(/\.docx$/i, "") || "document";
 
       try {
         await html2pdf()
           .set({
-            margin: 0,
+            margin: [10, 10, 10, 10],
             filename: `${baseName}.pdf`,
             image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
+            html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
             pagebreak: { mode: ["css", "legacy"] },
           })
