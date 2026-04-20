@@ -1,0 +1,17 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[functions]
+  node_bundler = "esbuild"
+  # Chromium binary is huge — include it explicitly
+  included_files = ["node_modules/@sparticuz/chromium/**"]
+
+[functions."convert"]
+  # Allow longer timeouts on Pro plan. Free tier caps at 10s regardless.
+  timeout = 26
+  # Memory boost helps Puppeteer cold start
+  memory = 1024

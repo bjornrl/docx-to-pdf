@@ -1,0 +1,128 @@
+.main {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.container {
+  width: 100%;
+  max-width: 560px;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+  color: var(--text);
+}
+
+.subtitle {
+  color: var(--muted);
+  margin: 0;
+  font-size: 15px;
+}
+
+.dropzone {
+  background: var(--surface);
+  border: 1.5px dashed var(--border);
+  border-radius: 10px;
+  padding: 56px 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.dropzone:hover {
+  border-color: var(--text);
+  background: #f9f9f9;
+}
+
+.dropzoneActive {
+  border-color: var(--text);
+  border-style: solid;
+  background: #f5f5f5;
+  transform: scale(1.01);
+}
+
+.dropzoneError {
+  border-color: var(--error);
+  background: #fef2f2;
+}
+
+.icon, .iconSuccess, .iconError {
+  font-size: 32px;
+  font-weight: 300;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f4f4f5;
+  color: var(--text);
+}
+
+.iconSuccess { background: #ecfdf5; color: var(--success); }
+.iconError { background: #fee2e2; color: var(--error); }
+
+.dropText {
+  margin: 0 0 6px;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.dropText strong { font-weight: 600; }
+
+.hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto 18px;
+  border: 2.5px solid var(--border);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.resetBtn {
+  margin-top: 18px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.resetBtn:hover { opacity: 0.85; }
+
+.footer {
+  margin-top: 28px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.footer p { margin: 0; }
