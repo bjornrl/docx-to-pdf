@@ -79,10 +79,17 @@ export const handler: Handler = async (event) => {
 
 /** Render the assembled HTML to a PDF buffer using headless Chrome. */
 async function renderPdf(html: string): Promise<Buffer> {
+  // On Netlify, functions execute at /var/task and node_modules is bundled
+  // alongside. @sparticuz/chromium can't resolve __dirname correctly after
+  // esbuild bundling, so we point it at the brotli-compressed binaries
+  // explicitly. Override via env var for flexibility (local dev, etc.).
+  const chromiumBinDir =
+    process.env.CHROMIUM_BIN_DIR || "/var/task/node_modules/@sparticuz/chromium/bin";
+
   const browser = await puppeteer.launch({
     args: chromium.args,
     defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath(),
+    executablePath: await chromium.executablePath(chromiumBinDir),
     headless: true,
   });
 

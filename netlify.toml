@@ -7,11 +7,18 @@
 
 [functions]
   node_bundler = "esbuild"
-  # Chromium binary is huge — include it explicitly
-  included_files = ["node_modules/@sparticuz/chromium/**"]
+  # The chromium binary is brotli-compressed and lives in the package's bin/
+  # directory. esbuild won't pick it up on its own — we have to include it
+  # explicitly so it ends up at /var/task/node_modules/@sparticuz/chromium/bin.
+  included_files = [
+    "node_modules/@sparticuz/chromium/bin/**",
+    "node_modules/@sparticuz/chromium/build/**"
+  ]
+
+  # Don't let esbuild try to bundle the chromium package — it contains binary
+  # assets that must remain as files, not inlined into the function bundle.
+  external_node_modules = ["@sparticuz/chromium", "puppeteer-core"]
 
 [functions."convert"]
-  # Allow longer timeouts on Pro plan. Free tier caps at 10s regardless.
   timeout = 26
-  # Memory boost helps Puppeteer cold start
   memory = 1024
