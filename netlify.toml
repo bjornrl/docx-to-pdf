@@ -4,21 +4,3 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-[functions]
-  node_bundler = "esbuild"
-  # The chromium binary is brotli-compressed and lives in the package's bin/
-  # directory. esbuild won't pick it up on its own — we have to include it
-  # explicitly so it ends up at /var/task/node_modules/@sparticuz/chromium/bin.
-  included_files = [
-    "node_modules/@sparticuz/chromium/bin/**",
-    "node_modules/@sparticuz/chromium/build/**"
-  ]
-
-  # Don't let esbuild try to bundle the chromium package — it contains binary
-  # assets that must remain as files, not inlined into the function bundle.
-  external_node_modules = ["@sparticuz/chromium", "puppeteer-core"]
-
-[functions."convert"]
-  timeout = 26
-  memory = 1024
